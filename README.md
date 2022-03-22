@@ -10,6 +10,35 @@ With Microsoft.Extensions.Hosting you can call ```UseWindowsService()``` when cr
 
 When publishing: set deployment-mode to Self-contained and check the produce single file and enable ReadyToRun compilation boxes as described [here](https://docs.microsoft.com/en-us/dotnet/core/extensions/windows-service).
 
+## Running as a webhost
+```ServiceBase.Run``` needs to be called when running as a webhost by passing the WebHost into a WebHostService and then passing into ServiceBase.Run
+
+See [this](https://www.stevejgordon.co.uk/running-net-core-generic-host-applications-as-a-windows-service)
+
+At the beginning of main
+```
+var isService = !(Debugger.IsAttached || args.Contains("--console"));
+
+if (isService)
+{
+    var pathToExe = Process.GetCurrentProcess().MainModule.FileName;
+    var pathToContentRoot = Path.GetDirectoryName(pathToExe);
+    Directory.SetCurrentDirectory(pathToContentRoot);
+}
+```
+
+When running the webhost
+```
+if (isService)
+{
+    var webHostService = new WebHostService(webHost.Build());
+    ServiceBase.Run(new ServiceBase[] { webHostService });
+}
+else
+{
+    await webHost.Build().RunAsync();
+}
+```
 ## If adding SignalR and need to listen on localhost:
 
 When injecting a HttpClient set the HttpClientHandler ServerCertificateCustomValidationCallback as described [here](https://stackoverflow.com/questions/52939211/the-ssl-connection-could-not-be-established) [and here](https://stackoverflow.com/questions/51642671/adding-handler-to-default-http-client-in-asp-net-core)
