@@ -5,6 +5,10 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>dotnet-WorkerService1-7B48560F-F2D8-4A91-87DC-87E09D48F5D8</UserSecretsId>
+		<ServerGarbageCollection>true</ServerGarbageCollection>
+		<OutputType>exe</OutputType>
+		<PublishSingleFile>true</PublishSingleFile>
+		<PublishReadyToRun>true</PublishReadyToRun>
 	</PropertyGroup>
 
 	<ItemGroup>
