@@ -1,11 +1,12 @@
-﻿{
+{
   "profiles": {
     "WorkerService1": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
+      "commandLineArgs": "--console",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
-      }
+      },
+      "dotnetRunMessages": true
     }
   }
 }
