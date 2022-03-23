@@ -15,10 +15,13 @@ using WorkerService1;
 // When publishing: set deployment-mode to Self-contained and check the produce single file and enable ReadyToRun compilation boxes
 // as described here: https://docs.microsoft.com/en-us/dotnet/core/extensions/windows-service
 
-bool isWebHost = true;
+var isWebHost = true;
+var serverUrl = string.Empty;
 
 //See https://www.stevejgordon.co.uk/running-net-core-generic-host-applications-as-a-windows-service
 var isService = !(Debugger.IsAttached || args.Contains("--console"));
+
+
 
 if (isService)
 {
@@ -30,6 +33,14 @@ if (isService)
 if (isWebHost)
 {
     IWebHostBuilder webHost = WebHost.CreateDefaultBuilder(args)
+        .ConfigureAppConfiguration(configurationSource =>
+        {
+            configurationSource.AddJsonFile(AppDomain.CurrentDomain.BaseDirectory + "/Urls.json", optional: false, reloadOnChange: true);
+            var configuration = configurationSource.Build();
+            serverUrl = configuration["Kestrel:Endpoints:Http:Url"];
+        })
+        .UseUrls(serverUrl)
+        .PreferHostingUrls(true)
         .ConfigureServices(services =>
         {
             // https://github.com/dotnet/runtime/blob/main/src/libraries/Microsoft.Extensions.Hosting.WindowsServices/src/WindowsServiceLifetime.cs
